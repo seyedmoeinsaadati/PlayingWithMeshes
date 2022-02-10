@@ -11,8 +11,8 @@ public class MeshGenerator : MonoBehaviour
 
     [Header("Mesh Setting:")] public AnimationCurve graph;
 
-    [Min(2)] public int resolution = 2;
-    
+    [Min(1)] public int resolution = 2;
+    [Min(3)] public int side;
 
     // [Range(-1, 1)] public float offset = 0;
     public float width = 1;
@@ -28,49 +28,72 @@ public class MeshGenerator : MonoBehaviour
             viewMeshFilter.mesh = viewMesh;
         }
 
-        CreateMesh();
+        CreateCylinder();
     }
 
-    public void CreateMesh()
-    {
-        int vertexCount = 2 * resolution;
-        int triangleCount = 2 * (resolution - 1);
+    private Vector3[] vertices;
 
-        Vector3[] vertices = new Vector3[vertexCount];
+    public void CreateCylinder()
+    {
+        // create cylinder with open top and down
+        int vertexCount = (side + 1) * (resolution + 1);
+        int triangleCount = 2 * resolution * side;
+
+        vertices = new Vector3[vertexCount];
         int[] triangles = new int[triangleCount * 3];
 
-        float step = (float) 1 / resolution;
+        // float step = (float) 1 / resolution;
+        float angleStep = (float) 360 / side;
 
-        vertices[0] = new Vector3(0, 0, 0);
-        for (int i = 1; i < vertices.Length - 1; i += 2)
+        for (int i = 0; i < resolution + 1; i++)
         {
-            float value = graph.Evaluate(step * i);
-            vertices[i] = new Vector3(0, i * step * height, 0);
-            vertices[i + 1] = new Vector3(value * width, i * step * height, value * width);
-        }
-
-        //vertices[vertices.Length - 1] = new Vector3(0, height, 0);
-
-        for (int i = 0; i < triangleCount; i++)
-        {
-            triangles[i * 3] = i;
-            if (i % 2 == 0)
+            //reset angle
+            float anglePointer = 0;
+            for (int j = 0; j < side + 1; j++)
             {
-                triangles[i * 3 + 1] = i + 1;
-                triangles[i * 3 + 2] = i + 2;
-            }
-            else
-            {
-                triangles[i * 3 + 1] = i + 2;
-                triangles[i * 3 + 2] = i + 1;
+                var vertexIndex = i * (side + 1) + j;
+                Vector3 vertexPos = new Vector3(
+                    Mathf.Cos(anglePointer * Mathf.Deg2Rad) * width,
+                    (float) i / resolution * height,
+                    Mathf.Sin(anglePointer * Mathf.Deg2Rad) * width);
+
+                vertices[vertexIndex] = vertexPos;
+
+                anglePointer += angleStep;
             }
         }
 
+        // print(vertexCount + ", " + triangleCount);
+
+        // for (int ti = 0, vi = 0, y = 0; y < resolution + 1; y++, vi++)
+        // {
+        //     for (int x = 0; x < side + 1; x++, ti += 6, vi++)
+        //     {
+        //         triangles[ti] = vi;
+        //         triangles[ti + 3] = triangles[ti + 2] = vi + 1;
+        //         triangles[ti + 4] = triangles[ti + 1] = vi + side + 1;
+        //         triangles[ti + 5] = vi + side + 2;
+        //     }
+        // }
 
         viewMesh.Clear();
         viewMesh.vertices = vertices;
         viewMesh.triangles = triangles;
         viewMesh.RecalculateNormals();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.black;
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            // if (vertices[i] == Vector3.zero)
+            // {
+            //     print(i);
+            // }
+
+            Gizmos.DrawSphere(vertices[i], 0.01f);
+        }
     }
 
     private void OnValidate()
