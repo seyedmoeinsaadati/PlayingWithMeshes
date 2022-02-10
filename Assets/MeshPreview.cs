@@ -10,7 +10,8 @@ public class MeshPreview : MonoBehaviour
     public enum MeshType
     {
         Cylinder,
-        CylinderWithGraph
+        CylinderWithGraph,
+        Circle
     }
 
     public bool autoUpdate;
@@ -44,7 +45,9 @@ public class MeshPreview : MonoBehaviour
                 DrawMesh(MeshGenerator.CreateCylinder(radius, length, side, segment, normalMode, "preview_cylinder"));
                 break;
             case MeshType.CylinderWithGraph:
-                // DrawMesh(MeshGenerator.CreateCylinder());
+            // DrawMesh(MeshGenerator.CreateCylinder());
+            case MeshType.Circle:
+                DrawMesh(MeshGenerator.CreateCircle(radius, segment, "preview_circle"));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

@@ -120,6 +120,48 @@ public static class MeshGenerator
         return mesh;
     }
 
+    public static Mesh CreateCircle(float radius = 1, int resolution = 32, string name = "Default Circle")
+    {
+        // calculating
+        float angleStep = (float) 360 / resolution;
+
+        // initialize mesh data
+        Vector3[] vertices = new Vector3[resolution];
+        Vector2[] uvs = new Vector2[resolution];
+        int[] triangles = new int[(resolution - 2) * 3];
+
+        // calculating vertices, uvs
+        vertices[0] = Vector3.forward * radius;
+        uvs[0] = Vector2.zero;
+        float anglePointer = angleStep;
+        for (int i = 0; i < resolution - 1; i++)
+        {
+            Vector3 rotatePoint = vertices[0].RotateXZ(anglePointer * Mathf.Deg2Rad, true) ;
+            vertices[i + 1] = rotatePoint;
+            uvs[i + 1] = Vector2.one * rotatePoint.magnitude / radius;
+            anglePointer += angleStep;
+
+            // calculating triangles
+            if (i < resolution - 2)
+            {
+                triangles[i * 3] = 0;
+                triangles[i * 3 + 1] = i + 1;
+                triangles[i * 3 + 2] = i + 2;
+            }
+        }
+
+        Mesh mesh = new Mesh
+        {
+            name = name,
+            vertices = vertices,
+            triangles = triangles,
+            uv = uvs
+        };
+        mesh.RecalculateNormals();
+
+        return mesh;
+    }
+
     public enum NormalMode
     {
         Flat = 0,
