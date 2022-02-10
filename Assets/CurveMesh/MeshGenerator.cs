@@ -65,16 +65,16 @@ public class MeshGenerator : MonoBehaviour
 
         // print(vertexCount + ", " + triangleCount);
 
-        // for (int ti = 0, vi = 0, y = 0; y < resolution + 1; y++, vi++)
-        // {
-        //     for (int x = 0; x < side + 1; x++, ti += 6, vi++)
-        //     {
-        //         triangles[ti] = vi;
-        //         triangles[ti + 3] = triangles[ti + 2] = vi + 1;
-        //         triangles[ti + 4] = triangles[ti + 1] = vi + side + 1;
-        //         triangles[ti + 5] = vi + side + 2;
-        //     }
-        // }
+        for (int ti = 0, vi = 0, y = 0; y < resolution; y++, vi++)
+        {
+            for (int x = 0; x < side; x++, ti += 6, vi++)
+            {
+                triangles[ti] = vi;
+                triangles[ti + 3] = triangles[ti + 2] = vi + 1;
+                triangles[ti + 4] = triangles[ti + 1] = vi + side + 1;
+                triangles[ti + 5] = vi + side + 2;
+            }
+        }
 
         viewMesh.Clear();
         viewMesh.vertices = vertices;
