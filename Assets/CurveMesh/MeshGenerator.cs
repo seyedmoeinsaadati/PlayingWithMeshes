@@ -12,6 +12,7 @@ public class MeshGenerator : MonoBehaviour
     [Header("Mesh Setting:")] public AnimationCurve graph;
 
     [Min(2)] public int resolution = 2;
+    
 
     // [Range(-1, 1)] public float offset = 0;
     public float width = 1;
@@ -19,7 +20,7 @@ public class MeshGenerator : MonoBehaviour
 
     public void Generate()
     {
-        if (viewMeshFilter == null)
+        if (viewMeshFilter == null || viewMesh == null)
         {
             viewMeshFilter = GetComponent<MeshFilter>();
 
@@ -48,7 +49,7 @@ public class MeshGenerator : MonoBehaviour
             vertices[i + 1] = new Vector3(value * width, i * step * height, value * width);
         }
 
-        vertices[vertices.Length - 1] = new Vector3(0, height, 0);
+        //vertices[vertices.Length - 1] = new Vector3(0, height, 0);
 
         for (int i = 0; i < triangleCount; i++)
         {
