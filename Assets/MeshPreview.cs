@@ -10,7 +10,7 @@ public class MeshPreview : MonoBehaviour
     public enum MeshType
     {
         Cylinder,
-        CylinderWithGraph,
+        CylinderAddictive,
         Circle
     }
 
@@ -21,6 +21,8 @@ public class MeshPreview : MonoBehaviour
     private Mesh viewMesh;
 
     [Header("Mesh Setting:")] public AnimationCurve graph;
+    public float graphFactor = 1;
+    public bool isSymmetry;
     [Min(1)] public int segment = 2;
     [Min(3)] public int side;
     public MeshGenerator.NormalMode normalMode;
@@ -44,8 +46,10 @@ public class MeshPreview : MonoBehaviour
             case MeshType.Cylinder:
                 DrawMesh(MeshGenerator.CreateCylinder(radius, length, side, segment, normalMode, "preview_cylinder"));
                 break;
-            case MeshType.CylinderWithGraph:
-            // DrawMesh(MeshGenerator.CreateCylinder());
+            case MeshType.CylinderAddictive:
+                DrawMesh(MeshGenerator.CreateAddictiveCylinder(radius, length, side, segment, normalMode, graph,
+                    graphFactor, isSymmetry, "preview_cylinder"));
+                break;
             case MeshType.Circle:
                 DrawMesh(MeshGenerator.CreateCircle(radius, segment, "preview_circle"));
                 break;
