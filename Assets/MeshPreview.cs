@@ -57,6 +57,12 @@ public class MeshPreview : MonoBehaviour
                 throw new ArgumentOutOfRangeException();
         }
     }
+
+    public void SaveMesh()
+    {
+        AssetDatabase.CreateAsset(viewMeshFilter.sharedMesh, "Assets/mesh.asset");
+        AssetDatabase.SaveAssets();
+    }
 }
 
 #if UNITY_EDITOR
@@ -79,9 +85,9 @@ public class MeshPreviewEditor : Editor
             meshPreview.DrawInEditor();
         }
 
-        if (GUILayout.Button("Save Mesh as FBX"))
+        if (GUILayout.Button("Save Mesh as Asset file"))
         {
-            // meshPreview.SaveMesh();
+            meshPreview.SaveMesh();
         }
     }
 }
