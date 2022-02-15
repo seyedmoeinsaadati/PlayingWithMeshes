@@ -26,17 +26,12 @@ public class MeshPreview : MonoBehaviour
     [Min(1)] public int segment = 2;
     [Min(3)] public int side;
     public MeshGenerator.NormalMode normalMode;
-
-    // [Range(-1, 1)] public float offset = 0;
     public float radius = 1;
     public float length = 1;
 
     public void DrawMesh(Mesh mesh)
     {
         viewMeshFilter.sharedMesh = mesh;
-
-        // textureRenderer.gameObject.SetActive(false);
-        // meshFilter.gameObject.SetActive(true);
     }
 
     public void DrawInEditor()
@@ -71,7 +66,7 @@ public class MeshPreviewEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        MeshPreview meshPreview = (MeshPreview) target;
+        MeshPreview meshPreview = (MeshPreview)target;
 
         DrawDefaultInspector();
 

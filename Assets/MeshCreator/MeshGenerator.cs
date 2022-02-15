@@ -17,9 +17,9 @@ public static class MeshGenerator
         string name = "Default Cylinder")
     {
         // calculating
-        int vertexCount = (side + 1) * (segment + 1);
-        int triangleCount = 2 * segment * side;
-        float angleStep = (float) 360 / side;
+        int vertexCount = (side + 1) * (segment + 1) + 2;
+        int triangleCount = (2 * segment * side) + (2 * side);
+        float angleStep = (float)360 / side;
 
         // initialize mesh data
         Vector3[] vertices = new Vector3[vertexCount];
@@ -32,23 +32,28 @@ public static class MeshGenerator
         for (int i = 0; i < segment + 1; i++)
         {
             float anglePointer = 0;
+
             for (int j = 0; j < side + 1; j++)
             {
                 var vertexIndex = i * (side + 1) + j;
                 Vector3 vertexPos = new Vector3(
                     Mathf.Cos(anglePointer * Mathf.Deg2Rad) * radius,
-                    (float) i / segment * length,
+                    (float)i / segment * length,
                     Mathf.Sin(anglePointer * Mathf.Deg2Rad) * radius);
 
                 vertices[vertexIndex] = vertexPos;
-                uvs[vertexIndex] = new Vector2((float) j / (side + 1), (float) i / (segment + 1));
+                uvs[vertexIndex] = new Vector2((float)j / (side + 1), (float)i / (segment + 1));
 
                 anglePointer += angleStep;
             }
         }
 
+        vertices[vertices.Length - 2] = Vector3.zero;
+        vertices[vertices.Length - 1] = Vector3.up * length;
+
         // triangle calculation
-        for (int ti = 0, vi = 0, y = 0; y < segment; y++, vi++)
+        int ti = 0;
+        for (int vi = 0, y = 0; y < segment; y++, vi++)
         {
             for (int x = 0; x < side; x++, ti += 6, vi++)
             {
@@ -57,6 +62,23 @@ public static class MeshGenerator
                 triangles[ti + 4] = triangles[ti + 1] = vi + side + 1;
                 triangles[ti + 5] = vi + side + 2;
             }
+        }
+
+        // down
+        for (int i = 0; i < side; i++)
+        {
+            triangles[ti] = vertices.Length - 2;
+            triangles[ti + 1] = i;
+            triangles[ti + 2] = i + 1;
+            ti += 3;
+        }
+        // up
+        for (int i = 0; i < side; i++)
+        {
+            triangles[ti + 2] = vertices.Length - 1;
+            triangles[ti + 1] = (segment * (side + 1)) + i;
+            triangles[ti] = (segment * (side + 1)) + i + 1;
+            ti += 3;
         }
 
         // normal calculation
@@ -126,9 +148,9 @@ public static class MeshGenerator
         string name = "Default Cylinder")
     {
         // calculating
-        int vertexCount = (side + 1) * (segment + 1);
-        int triangleCount = 2 * segment * side;
-        float angleStep = (float) 360 / side;
+        int vertexCount = (side + 1) * (segment + 1) + 2;
+        int triangleCount = (2 * segment * side) + (2 * side);
+        float angleStep = (float)360 / side;
 
         // initialize mesh data
         Vector3[] vertices = new Vector3[vertexCount];
@@ -138,37 +160,44 @@ public static class MeshGenerator
 
         // creating...
         // vertex, uvs calculation
+        Vector2 direction = Vector2.zero;
+        Vector2 avgDir = Vector2.zero, avgDir2 = Vector2.zero;
         for (int i = 0; i < segment + 1; i++)
         {
             float anglePointer = 0;
             for (int j = 0; j < side + 1; j++)
             {
                 var vertexIndex = i * (side + 1) + j;
-
-                float addictiveValue = addictive.Evaluate((float) i / segment) * addictiveFactor;
-                Vector2 direction = new Vector2(
+                float addictiveValue = addictive.Evaluate((float)i / segment) * addictiveFactor;
+                direction = new Vector2(
                     Mathf.Cos(anglePointer * Mathf.Deg2Rad),
                     Mathf.Sin(anglePointer * Mathf.Deg2Rad)).normalized;
 
-                if (radius == 0)
-                {
-                    radius = 0.01f;
-                }
+                if (radius == 0) radius = 0.01f;
 
                 direction *= radius;
                 direction += isSymmetry ? direction.normalized * addictiveValue : Vector2.one * addictiveValue;
-                float yValue = (float) i / segment * length;
+
+                if (i == 0 && j > 0) avgDir += direction;
+                if (i == segment && j > 0) avgDir2 += direction;
+
+                float yValue = (float)i / segment * length;
                 Vector3 vertexPos = new Vector3(direction.x, yValue, direction.y);
 
                 vertices[vertexIndex] = vertexPos;
-                uvs[vertexIndex] = new Vector2((float) j / (side + 1), (float) i / (segment + 1));
-
+                uvs[vertexIndex] = new Vector2((float)j / (side + 1), (float)i / (segment + 1));
                 anglePointer += angleStep;
             }
         }
 
+        avgDir /= (side + 1);
+        avgDir2 /= (side + 1);
+        vertices[vertices.Length - 2] = new Vector3(avgDir.x, 0, avgDir.y);
+        vertices[vertices.Length - 1] = new Vector3(avgDir2.x, length, avgDir2.y);
+
         // triangle calculation
-        for (int ti = 0, vi = 0, y = 0; y < segment; y++, vi++)
+        int ti = 0;
+        for (int vi = 0, y = 0; y < segment; y++, vi++)
         {
             for (int x = 0; x < side; x++, ti += 6, vi++)
             {
@@ -177,6 +206,23 @@ public static class MeshGenerator
                 triangles[ti + 4] = triangles[ti + 1] = vi + side + 1;
                 triangles[ti + 5] = vi + side + 2;
             }
+        }
+
+        // down
+        for (int i = 0; i < side; i++)
+        {
+            triangles[ti] = vertices.Length - 2;
+            triangles[ti + 1] = i;
+            triangles[ti + 2] = i + 1;
+            ti += 3;
+        }
+        // up
+        for (int i = 0; i < side; i++)
+        {
+            triangles[ti + 2] = vertices.Length - 1;
+            triangles[ti + 1] = (segment * (side + 1)) + i;
+            triangles[ti] = (segment * (side + 1)) + i + 1;
+            ti += 3;
         }
 
         // normal calculation
@@ -244,7 +290,7 @@ public static class MeshGenerator
     public static Mesh CreateCircle(float radius = 1, int resolution = 32, string name = "Default Circle")
     {
         // calculating
-        float angleStep = (float) 360 / resolution;
+        float angleStep = (float)360 / resolution;
 
         // initialize mesh data
         Vector3[] vertices = new Vector3[resolution];
