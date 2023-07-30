@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using Moein.Spline;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,7 +13,8 @@ public class MeshPreview : MonoBehaviour
     {
         Cylinder,
         CylinderAddictive,
-        Circle
+        Circle,
+        Path
     }
 
     public bool autoUpdate;
@@ -19,6 +22,8 @@ public class MeshPreview : MonoBehaviour
 
     [SerializeField] private MeshFilter viewMeshFilter;
     private Mesh viewMesh;
+
+    [SerializeField] private Spline path;
 
     [Header("Mesh Setting:")] public AnimationCurve graph;
     public float graphFactor = 1;
@@ -47,6 +52,10 @@ public class MeshPreview : MonoBehaviour
                 break;
             case MeshType.Circle:
                 DrawMesh(MeshGenerator.CreateCircle(radius, segment, "preview_circle"));
+                break;
+            case MeshType.Path:
+                //if (path != null)
+                // DrawMesh(MeshGenerator.CreateCylinderOnPath(path, radius, side, normalMode));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

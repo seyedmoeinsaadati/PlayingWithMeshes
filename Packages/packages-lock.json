@@ -5,10 +5,10 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "374175693e57cba298cd057d158ce8bcf7f330b5"
+      "hash": "e2dc7f0a144049e08a2e352f0fb38564f8b80a53"
     },
     "com.unity.collab-proxy": {
-      "version": "1.10.2",
+      "version": "1.14.18",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
@@ -31,7 +31,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.11",
+      "version": "2.0.15",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -40,14 +40,14 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.vscode": {
-      "version": "1.2.4",
+      "version": "1.2.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.29",
+      "version": "1.1.31",
       "depth": 0,
       "source": "registry",
       "dependencies": {
